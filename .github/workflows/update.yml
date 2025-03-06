@@ -1,0 +1,25 @@
+name: Auto Update InstallNET.sh
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天 00:00 UTC 自动运行
+  workflow_dispatch:  # 允许手动触发更新
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download latest InstallNET.sh
+        run: curl -fsSL 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' -o InstallNET.sh
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add InstallNET.sh
+          git commit -m "Auto-update InstallNET.sh" || exit 0
+          git push
